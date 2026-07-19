@@ -38,7 +38,7 @@ LargeSectors		dd 0		; Number of LBA sectors
 DriveNo			dw 0		; Drive No: 0
 Signature		db 41		; Drive signature: 41 for floppy
 VolumeID		dd 00000000h	; Volume ID: any number
-VolumeLabel		db "MIKEOS     "; Volume Label: any 11 chars
+VolumeLabel		db "NovaOS     "; Volume Label: any 11 chars
 FileSystem		db "FAT12   "	; File system type: don't change!
 
 
@@ -333,7 +333,7 @@ l2hts:			; Calculate head, track and sector settings for int 13h
 ; ------------------------------------------------------------------
 ; STRINGS AND VARIABLES
 
-	kern_filename	db "KERNEL  BIN"	; MikeOS kernel filename
+	kern_filename	db "KERNEL  BIN"	; NovaOS kernel filename
 
 	disk_error	db "Floppy error! Press any key...", 0
 	file_not_found	db "KERNEL.BIN not found!", 0

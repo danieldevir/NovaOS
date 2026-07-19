@@ -79,6 +79,10 @@ get_cmd:				; Main processing loop
 	call os_string_compare
 	jc near print_ver
 
+	mov di, sysinfo_string		; 'SYSINFO' entered?
+	call os_string_compare
+	jc near print_sysinfo
+
 	mov di, time_string		; 'TIME' entered?
 	call os_string_compare
 	jc near print_time
@@ -274,6 +278,12 @@ print_date:
 
 print_ver:
 	mov si, version_msg
+	call os_print_string
+	jmp get_cmd
+
+
+print_sysinfo:
+	mov si, sysinfo_text
 	call os_print_string
 	jmp get_cmd
 
@@ -565,6 +575,8 @@ exit:
 
 	version_msg		db 'NovaOS ', NovaOS_VER, 13, 10, 0
 
+sysinfo_text	db 'NovaOS 1.0', 13, 10, 'Architecture: x86', 13, 10, 'Kernel: Nova Kernel', 13, 10, 0
+
 	exit_string		db 'EXIT', 0
 	help_string		db 'HELP', 0
 	cls_string		db 'CLS', 0
@@ -572,6 +584,7 @@ exit:
 	time_string		db 'TIME', 0
 	date_string		db 'DATE', 0
 	ver_string		db 'VER', 0
+	sysinfo_string		db 'SYSINFO', 0
 	cat_string		db 'CAT', 0
 	del_string		db 'DEL', 0
 	ren_string		db 'REN', 0

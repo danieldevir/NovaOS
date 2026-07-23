@@ -1,7 +1,7 @@
 
 REM ------------------------------------------------
-REM ADVENTURE 2.3 -- By Justin Tokarchuk
-REM For MikeOS and MikeBasic Derivatives
+REM NovaOS
+REM By DanielDevir
 REM ------------------------------------------------
 
 REM VARS:

@@ -59,7 +59,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Daniel Baradaran** (11 years old)
 *   GitHub: [@danieldevir](https://github.com/danieldevir)
-*   Blog: [danieblog.ir](https://danieblog.ir)
+*   Blog: [danieblog](https://danialcodes.zya.me)
 
 ---
 *Built with passion for learning and the spirit of open source.*

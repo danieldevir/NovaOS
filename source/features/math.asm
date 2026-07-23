@@ -1,8 +1,6 @@
 ; ==================================================================
-; MikeOS -- The Mike Operating System kernel
-; Copyright (C) 2006 - 2014 MikeOS Developers -- see doc/LICENSE.TXT
-;
-; MATH ROUTINES
+; NovaOS -- The Nova Operating System kernel
+; MATH ROUTING
 ; ==================================================================
 
 ; ------------------------------------------------------------------

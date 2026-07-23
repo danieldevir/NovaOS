@@ -1,6 +1,5 @@
 ; ==================================================================
-; MikeOS -- The Mike Operating System kernel
-; Copyright (C) 2006 - 2014 MikeOS Developers -- see doc/LICENSE.TXT
+; NovaOS -- The Nova Operating System kernel
 ;
 ; STRING MANIPULATION ROUTINES
 ; ==================================================================

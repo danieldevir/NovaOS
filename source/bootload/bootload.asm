@@ -1,6 +1,5 @@
 ; ==================================================================
 ; NovaOS bootloader
-; Originally based on the MikeOS bootloader (C) 2006-2014 MikeOS Developers
 ;
 ; Based on a free boot loader by E Dehling. It scans the FAT12
 ; floppy for KERNEL.BIN (the NovaOS kernel), loads it and executes it.

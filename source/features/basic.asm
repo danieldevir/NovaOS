@@ -1,6 +1,6 @@
 ; ==================================================================
-; MikeOS -- The Mike Operating System kernel
-; Copyright (C) 2006 - 2014 MikeOS Developers -- see doc/LICENSE.TXT
+; NovaOS -- The Nova Operating System kernel
+; Originally based on the MikeOS BASIC interpreter (C) 2006-2014 MikeOS Developers
 ;
 ; BASIC CODE INTERPRETER (4.5)
 ; ==================================================================

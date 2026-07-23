@@ -1,6 +1,0 @@
-megs: 32
-floppya: 1_44=disk_image.bin, status=inserted
-boot: a
-log: /dev/null
-mouse: enabled=0
-display_library: none

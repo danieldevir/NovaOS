@@ -1,3 +1,4 @@
+;NovaOS
 if $1 = "" then goto help
 d = ramstart
 

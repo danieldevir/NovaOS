@@ -62,7 +62,8 @@ os_print_4hex		equ	007Bh	; Display AX in hex
 os_show_cursor		equ	008Ah	; (Nothing used)
 os_hide_cursor		equ	008Dh	; (Nothing used)
 os_dump_registers	equ	0090h	; Shows contents of AX, BX, CX, DX
-
+os_nova_draw_window     equ     00D2h
+os_nova_draw_statusbar  equ     00D5h
 
 ; Keyboard handling
 

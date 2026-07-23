@@ -101,9 +101,11 @@ os_call_vectors:
 	jmp os_run_basic		; 00C6h
 	jmp os_port_byte_out		; 00C9h
 	jmp os_port_byte_in		; 00CCh
-	jmp os_string_tokenize		; 00CFh
-
-
+	jmp os_string_tokenize          ; 00CFh
+	jmp nova_draw_window             ; 00D2h
+	nop
+	nop
+	jmp nova_draw_statusbar          ; 00D5h
 ; ------------------------------------------------------------------
 ; START OF MAIN KERNEL CODE
 
@@ -169,46 +171,62 @@ no_autorun_bin:
 	mov ax, 32768
 	call os_run_basic		; Run the kernel's BASIC interpreter
 
-	jmp app_selector		; And go to the app selector menu when BASIC ends
+	jmp nova_launcher
 
 
 	; Now we display a dialog box offering the user a choice of
 	; a menu-driven program selector, or a command-line interface
 
 option_screen:
-	mov ax, os_init_msg		; Set up the welcome screen
-	mov bx, os_version_msg
-	mov cx, 10011111b		; Colour: white text on light blue
-	call os_draw_background
+    call os_clear_screen
 
-	mov ax, dialog_string_1		; Ask if user wants app selector or command-line
-	mov bx, dialog_string_2
-	mov cx, dialog_string_3
-	mov dx, 1			; We want a two-option dialog box (OK or Cancel)
-	call os_dialog_box
+    mov si, nova_splash
+    call os_print_string
 
-	cmp ax, 1			; If OK (option 0) chosen, start app selector
-	jne near app_selector
+    mov si, loaded_msg
+    call os_print_string
 
-	call os_clear_screen		; Otherwise clean screen and start the CLI
-	call os_command_line
+    call os_wait_for_key
 
-	jmp option_screen		; Offer menu/CLI choice after CLI has exited
+    call os_clear_screen
+    call nova_launcher
+    jmp option_screen
+
+nova_splash db 13,10
+            db '================================',13,10
+            db '            NovaOS',13,10
+            db '     The Nova Operating System',13,10
+            db '            Version 1.0',13,10
+            db '================================',13,10
+            db 13,10
+            db '          Loading Kernel...',13,10,0
 
 
-	; Data for the above code...
 
-	os_init_msg		db 'Welcome to NovaOS', 0
-	os_version_msg		db 'Version ', NovaOS_VER, 0
+nova_shutdown:
+    mov ax, 5301h
+    xor bx, bx
+    int 15h
 
-	dialog_string_1		db 'Thanks for trying out NovaOS!', 0
-	dialog_string_2		db 'Please select an interface: OK for the', 0
-	dialog_string_3		db 'program menu, Cancel for command line.', 0
+    mov ax, 530Eh
+    mov cx, 0001h
+    int 15h
 
+.shutdown_loop:
+    cli
+    hlt
+    jmp .shutdown_loop
+
+
+
+loaded_msg db 13,10
+           db 'Loaded Complete',13,10
+           db 'Press any key to continue',13,10,0
 
 
 app_selector:
-	mov ax, os_init_msg		; Draw main screen layout
+        call os_command_line
+        jmp app_selector
 	mov bx, os_version_msg
 	mov cx, 10011111b		; Colour: white text on light blue
 	call os_draw_background
@@ -220,6 +238,9 @@ app_selector:
 	jc option_screen		; Return to the CLI/menu choice screen if Esc pressed
 
 	mov si, ax			; Did the user try to run 'KERNEL.BIN'?
+    os_init_msg             db 'Welcome to NovaOS', 0
+    os_version_msg          db 'Version 1.0', 0
+
 	mov di, kern_file_name
 	call os_string_compare
 	jc no_kernel_execute		; Show an error message if so
@@ -269,7 +290,7 @@ execute_bin_program:
 					; (program must end with 'ret')
 
 	call os_clear_screen		; When finished, clear screen
-	jmp app_selector		; and go back to the program list
+	jmp nova_launcher		; and go back to the program list
 
 
 no_kernel_execute:			; Warn about trying to executing kernel!
@@ -279,7 +300,7 @@ no_kernel_execute:			; Warn about trying to executing kernel!
 	mov dx, 0			; One button for dialog box
 	call os_dialog_box
 
-	jmp app_selector		; Start over again...
+	jmp nova_launcher		; Start over again...
 
 
 not_bin_extension:
@@ -321,7 +342,7 @@ not_bin_extension:
 	call os_wait_for_key
 
 	call os_clear_screen
-	jmp app_selector		; and go back to the program list
+	jmp nova_launcher		; and go back to the program list
 
 
 not_bas_extension:
@@ -333,7 +354,7 @@ not_bas_extension:
 	mov dx, 0			; One button for dialog box
 	call os_dialog_box
 
-	jmp app_selector		; Start over again...
+	jmp nova_launcher		; Start over again...
 
 
 	; And now data for the above code...
@@ -383,7 +404,8 @@ not_bas_extension:
 	%INCLUDE "features/sound.asm"
 	%INCLUDE "features/string.asm"
 	%INCLUDE "features/basic.asm"
-
+        %INCLUDE "ui/novaui.asm"
+	%INCLUDE "ui/novalauncher.asm"
 
 ; ==================================================================
 ; END OF KERNEL

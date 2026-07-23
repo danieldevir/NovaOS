@@ -1,14 +1,9 @@
 ; ==================================================================
-; The Mike Operating System bootloader
-; Copyright (C) 2006 - 2014 MikeOS Developers -- see doc/LICENSE.TXT
+; NovaOS bootloader
+; Originally based on the MikeOS bootloader (C) 2006-2014 MikeOS Developers
 ;
 ; Based on a free boot loader by E Dehling. It scans the FAT12
-; floppy for KERNEL.BIN (the MikeOS kernel), loads it and executes it.
-; This must grow no larger than 512 bytes (one sector), with the final
-; two bytes being the boot signature (AA55h). Note that in FAT12,
-; a cluster is the same as a sector: 512 bytes.
-; ==================================================================
-
+; floppy for KERNEL.BIN (the NovaOS kernel), loads it and executes it.
 
 	BITS 16
 
@@ -21,7 +16,7 @@
 ; Note: some of these values are hard-coded in the source!
 ; Values are those used by IBM for 1.44 MB, 3.5" diskette
 
-OEMLabel		db "MIKEBOOT"	; Disk label
+OEMLabel		db "NOVABOOT"	; Disk label
 BytesPerSector		dw 512		; Bytes per sector
 SectorsPerCluster	db 1		; Sectors per cluster
 ReservedForBoot		dw 1		; Reserved sectors for boot record

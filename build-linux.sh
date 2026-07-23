@@ -52,21 +52,21 @@ echo ">>> Adding bootloader to floppy image..."
 dd status=noxfer conv=notrunc if=source/bootload/bootload.bin of=disk_images/mikeos.flp || exit
 
 
-echo ">>> Copying MikeOS kernel and programs..."
+#echo ">>> Copying MikeOS kernel and programs..."
 
-rm -rf tmp-loop
+#rm -rf tmp-loop
 
-mkdir tmp-loop && mount -o loop -t vfat disk_images/mikeos.flp tmp-loop && cp source/kernel.bin tmp-loop/
+#mkdir tmp-loop && mount -o loop -t vfat disk_images/mikeos.flp tmp-loop && cp source/kernel.bin tmp-loop/
 
-cp programs/*.bin programs/*.bas programs/sample.pcx tmp-loop
+#cp programs/*.bin programs/*.bas programs/sample.pcx tmp-loop
 
-sleep 0.2
+#sleep 0.2
 
-echo ">>> Unmounting loopback floppy..."
+#echo ">>> Unmounting loopback floppy..."
 
-umount tmp-loop || exit
+#umount tmp-loop || exit
 
-rm -rf tmp-loop
+#rm -rf tmp-loop
 
 
 echo ">>> Creating CD-ROM ISO image..."

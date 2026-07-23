@@ -1,8 +1,14 @@
+
+
+
 ; ==================================================================
 ; MikeOS -- The Mike Operating System kernel
 ; Copyright (C) 2006 - 2014 MikeOS Developers -- see doc/LICENSE.TXT
 ;
 ; COMMAND LINE INTERFACE
+
+
+
 ; ==================================================================
 
 
@@ -67,9 +73,19 @@ get_cmd:				; Main processing loop
 	call os_string_compare
 	jc near print_help
 
+	mov di, about_string		; 'ABOUT' entered?
+	call os_string_compare
+	jc near print_about
+
+
 	mov di, cls_string		; 'CLS' entered?
 	call os_string_compare
 	jc near clear_screen
+
+	mov di, clear_string		; 'CLEAR' entered?
+	call os_string_compare
+	jc near clear_screen
+
 
 	mov di, dir_string		; 'DIR' entered?
 	call os_string_compare
@@ -98,6 +114,14 @@ get_cmd:				; Main processing loop
 	mov di, del_string		; 'DEL' entered?
 	call os_string_compare
 	jc near del_file
+
+        mov di, del_string		; 'DEL' entered?
+	call os_string_compare
+	jc near del_file
+
+	mov di, remove_string		; 'REMOVE' entered?
+	call os_string_compare
+	jc near remove_file
 
 	mov di, copy_string		; 'COPY' entered?
 	call os_string_compare
@@ -243,6 +267,12 @@ print_help:
 	mov si, help_text
 	call os_print_string
 	jmp get_cmd
+
+print_about:
+	mov si, about_text
+	call os_print_string
+	jmp get_cmd
+
 
 
 ; ------------------------------------------------------------------
@@ -407,12 +437,66 @@ del_file:
 	jmp get_cmd
 
 
-	.success_msg	db 'Deleted file: ', 0
+.success_msg	db 'Deleted file: ', 0
 	.failure_msg	db 'Could not delete file - does not exist or write protected', 13, 10, 0
 
 
 ; ------------------------------------------------------------------
 
+remove_file:
+	mov word si, [param_list]
+	call os_string_parse
+	cmp ax, 0			; Was a filename provided?
+	jne .filename_provided
+
+	mov si, nofilename_msg
+	call os_print_string
+	jmp get_cmd
+
+.filename_provided:
+	mov word [.tmp_name], ax
+
+	mov ax, word [.tmp_name]	; Normalize case so PROTECT check is reliable
+	call os_string_uppercase
+
+	mov si, word [.tmp_name]
+	mov di, protect_kernel
+	call os_string_compare
+	jc .protected
+
+	mov si, word [.tmp_name]
+	mov di, protect_novapad
+	call os_string_compare
+	jc .protected
+
+	mov ax, word [.tmp_name]
+	call os_remove_file
+	jc .failure
+
+	mov si, .success_msg
+	call os_print_string
+	mov si, ax
+	call os_print_string
+	call os_print_newline
+	jmp get_cmd
+
+.protected:
+	mov si, .protected_msg
+	call os_print_string
+	jmp get_cmd
+
+.failure:
+	mov si, .failure_msg
+	call os_print_string
+	jmp get_cmd
+
+	.tmp_name	dw 0
+	.success_msg	db 'Removed file: ', 0
+	.failure_msg	db 'Could not remove file - does not exist or write protected', 13, 10, 0
+	.protected_msg	db 'Cannot remove protected system file!', 13, 10, 0
+
+
+; ------------------------------------------------------------------
 size_file:
 	mov word si, [param_list]
 	call os_string_parse
@@ -547,6 +631,8 @@ ren_file:
 ; ------------------------------------------------------------------
 
 exit:
+    jmp nova_shutdown
+
 	ret
 
 
@@ -566,8 +652,16 @@ exit:
 
 	prompt			db '> ', 0
 
-	help_text		db 'Commands: DIR, COPY, REN, DEL, CAT, SIZE, CLS, HELP, TIME, DATE, VER, EXIT', 13, 10, 0
-	invalid_msg		db 'No such command or program', 13, 10, 0
+	help_text               db 'NovaOS Shell Commands',13,10
+                                db 'SYSINFO  System information',13,10
+                                db 'ABOUT    About NovaOS',13,10
+                                db 'CLEAR    Clear screen',13,10
+                                db 'DIR      List files',13,10
+                                db 'HELP     Help menu',13,10
+                                db 'VER      Version',13,10
+				db 'REMOVE   Delete file (protected)',13,10
+                                db 'EXIT     Exit shell',13,10,0
+invalid_msg		db 'No such command or program', 13, 10, 0
 	nofilename_msg		db 'No filename or not enough filenames', 13, 10, 0
 	notfound_msg		db 'File not found', 13, 10, 0
 	writefail_msg		db 'Could not write file. Write protected or invalid filename?', 13, 10, 0
@@ -587,13 +681,22 @@ sysinfo_text	db 'NovaOS 1.0', 13, 10, 'Architecture: x86', 13, 10, 'Kernel: Nova
 	sysinfo_string		db 'SYSINFO', 0
 	cat_string		db 'CAT', 0
 	del_string		db 'DEL', 0
+	remove_string		db 'REMOVE', 0
 	ren_string		db 'REN', 0
-	copy_string		db 'COPY', 0
-	size_string		db 'SIZE', 0
 
+	protect_kernel          db 'KERNEL.BIN', 0
+        protect_novapad         db 'NOVAPAD.BIN', 0
+        copy_string             db 'COPY', 0
+        size_string             db 'SIZE', 0
 	kern_file_string	db 'KERNEL', 0
 	kern_warn_msg		db 'Cannot execute kernel file!', 13, 10, 0
 
+
+
+        about_text              db 'NovaOS', 13, 10, 'The Nova Operating System', 13, 10, 'Version ', NovaOS_VER, 13, 10, 0        
+
+        about_string            db 'ABOUT', 0
+        clear_string            db 'CLEAR', 0
 
 ; ==================================================================
 
